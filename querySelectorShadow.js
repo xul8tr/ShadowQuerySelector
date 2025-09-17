@@ -1,8 +1,24 @@
 /**
+ * [Problem]
+ * When pages utilize ShadowRoot query selectors cannot query elements
+ * inside any ShadowRoot elements.
+ * 
+ * Example:
+ * URL: edge://flags/
+ * Script: document.querySelectorAll('.experiment-select, .experiment-enable-disable');
+ * Result: 0 
+**/
+
+/**
  * [Usage]
  * document.querySelectorAll(':shadow .some-class')
  * document.querySelectorAll(':shadow .some-class, :shadow .another-class')
- */
+ * 
+ * Example:
+ * URL: edge://flags/
+ * Script: document.querySelectorAll(':shadow .experiment-select, :shadow .experiment-enable-disable');
+ * Result: > 0
+**/
 
 
 /**
@@ -10,7 +26,7 @@
  * @param {string} selector - CSS selector to search for
  * @param {Element|Document} root - Starting point for the search (default: document)
  * @returns {Element|null} - First matching element or null
- */
+**/
 function querySelectorShadow(selector, root = document) {
     // First, try regular querySelector
     let element = root.querySelector(selector);
@@ -36,7 +52,7 @@ function querySelectorShadow(selector, root = document) {
  * @param {string} selector - CSS selector to search for
  * @param {Element|Document} root - Starting point for the search
  * @returns {Array<Element>} - Array of all matching elements
- */
+**/
 function querySelectorAllShadowOptimized(selector, root = document) {
     const results = [];
     const pending = [root];
@@ -68,7 +84,7 @@ function querySelectorAllShadowOptimized(selector, root = document) {
  * @param {Element} element - Starting element
  * @param {string} selector - CSS selector to match
  * @returns {Element|null} - Closest matching ancestor or null
- */
+**/
 function closestShadow(element, selector) {
     while (element) {
         if (element.matches && element.matches(selector)) {
@@ -92,7 +108,7 @@ function closestShadow(element, selector) {
  * @param {string} selector - CSS selector to search for
  * @param {Element|Document} root - Starting point for the search (default: document)
  * @returns {Array<Element>} - Array of all matching elements
- */
+**/
 function querySelectorAllShadow(selector, root = document) {
     const results = [];
     
@@ -116,7 +132,7 @@ function querySelectorAllShadow(selector, root = document) {
 /**
  * Override native querySelector and querySelectorAll methods
  * This adds :shadow pseudo-selector support for shadow DOM traversal
- */
+**/
 (function() {
     // Store original methods
     const originalQuerySelector = Element.prototype.querySelector;
